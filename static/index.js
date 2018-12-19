@@ -1,4 +1,4 @@
-let currentSelected = 0; // current selected autocomplete element
+let currentSelected = -1; // current selected autocomplete element
 let total = 0;
 var typingTimer;
 var doneTypingInterval = 200;
@@ -38,30 +38,32 @@ $(document).ready(function() {
     $(".searchForm ul").on("click", "li", function(e) {
         $(".searchForm input").val($(e.target).text());
         $(".searchForm ul").css("display", "none");
+        total = 0;
     });
 
     // This code is used to be able to use the keyboard to select
     $(".searchForm").on("keydown", function(e) {
-        console.log("keydown before!");
         if (total != 0) {
-            console.log("keydown!");
             if (e.which == 40) { // down key
-                let first = $(".searchForm ul li").first();
-                let prev;
-                for (let i = 0; i < currentSelected; i++) {
-                    prev = first;
-                    first = first.next();
+                if (currentSelected != total - 1) {
+                    let first = $(".searchForm ul li").first();
+                    let prev;
+                    for (let i = 0; i <= currentSelected; i++) {
+                        prev = first;
+                        first = first.next();
+                    }
+                    if (currentSelected >= 0 && currentSelected < total) {
+                        prev.css("background-color", "white");
+                        first.css("background-color", "lightblue");
+                    }
+                    else {
+                        first.css("background-color", "lightblue");
+                    }
+                    if (currentSelected < total) {
+                        currentSelected++;
+                    }                    
                 }
-                if (currentSelected > 0 && currentSelected <= total) {
-                    prev.css("background-color", "white");
-                    first.css("background-color", "lightblue");
-                }
-                else {
-                    first.css("background-color", "lightblue");
-                }
-                if (currentSelected < total) {
-                    currentSelected++;
-                }
+
             } else if (e.which == 38) { // up key
                 let first = $(".searchForm ul li").first();
                 let prev;
@@ -82,22 +84,40 @@ $(document).ready(function() {
             } else if (e.which == 13) { // enter key
                 let first = $(".searchForm ul li").first();
                 for (let i = 0; i < total; i++) {
-                    if (first.css("background-color") == "lightblue") {
-                        $(".searchForm input").val()
+                    if (i == currentSelected) {
+                        $(".searchForm input").val(first.text());
+                        break;
                     }
+                    first = first.next();
                 }
-                $(".searchForm input").val($(e.target).text());
                 $(".searchForm ul").css("display", "none");
+                total = 0;
             }
             else {
                 clearTimeout(typingTimer);
             }
 
+        } else if (e.which == 13) {
+            submit();
         }
 
     });
+
+    // Start of submit button code
+    $(".searchForm button").click(submit);
 });
 
+function submit() {
+
+    $.getJSON("/getImage", {
+        title: $(".searchForm input").val(),
+    }, function(data) {
+        var url = data["url"];
+        $(".listShows").append("<div class='show'><img src='" + url + "' alt='image'><h3>" + $(".searchForm input").val() + "</h3></div>");
+    });
+}
+
+// For autocomplete
 function doneTyping() {
     $searchFormUL = $(".searchForm ul");
     $searchFormUL.empty();
@@ -111,19 +131,17 @@ function doneTyping() {
         //     $(".searchForm ul").append("<li>" + matchItems[i] + "</li");
         // }
         // total = matchItems.length;
-        $(".searchForm ul").css("display", "block");
-        console.log("running json");
         $.getJSON("/getShowTitles", {
             search: $(".searchForm input").val(),
         }, function(data) {
-            console.log("ARE YOU EVEN RUNNING");
-            console.log(String(data["titles"][0]));
             for (var i = 0; i < data["titles"].length; i++) {
-
                 $(".searchForm ul").append("<li>" + data["titles"][i] + "</li>");
             }
+            $(".searchForm ul").css("display", "block");
             total = data["titles"].length;
-            console.log(data);
+            currentSelected = 0;
+            let first = $(".searchForm ul li").first();
+            first.css("background-color", "lightblue");
         });
 
     } else {
@@ -131,6 +149,7 @@ function doneTyping() {
     }
 }
 
+// Test code for autocomplete
 var autoItems = ["Arabic", "Beta", "Boogie", "C", "C#", "C++", "Dude", "Dudette", "Elephant", "Eagle", "Foo", "Fwaaaaa", "God", "Good", "Game of thrones is the best no doubt", "Hot", "Heat", "Imp", "Idiot", "Jeremy Clarkson", "John", "Kim", "Kim Jong Un", "Lot", "Loo", "Mom", "Mommy i want a juice box", "Nana", "nananananana", "opera", "poop", "query", "Robb Stark is dead SPOILERS!", "Stark", "Tyrion", "Usurper", "Vogue", "Webb", "Xylophone", "Yoyo", "Zeeeeeeeeeee"];
 
 function getAutoList(text) {
@@ -142,7 +161,11 @@ function getAutoList(text) {
     }
     return returnArray;
 }
+// End test code for autocomplete
 
+
+// Required for function to detect whether the user has stopped typing or not
+// Used to minimise API requests
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -1,32 +1,67 @@
 
-body {
-	font-family: 'Raleway', sans-serif;
-}
+@media (min-width: 1200px) {
 
-.searchForm {
-  width: 25%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 100px;
-}
+  body {
+  	font-family: 'Raleway', sans-serif;
+  }
 
-.searchForm ul {
-  list-style: none;
-  border: 1px solid black;
-  padding: 0;
-  display: none;
-}
-.searchForm ul li {
-  padding-left: 5px;
-}
-.searchForm button {
-  margin-left: 10px;
-}
+  .searchForm {
+    width: 25%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+  }
 
-.searchForm input {
-  height: 35px;
-}
+  .searchForm ul {
+    list-style: none;
+    border: 1px solid black;
+    padding: 0;
+    display: none;
+    position: absolute;
+    background-color: white;
+  }
+  .searchForm ul li {
+    padding-left: 5px;
+  }
+  .searchForm button {
+    margin-left: 10px;
+  }
 
-h1 {
-  text-align: center;
+  .searchForm input {
+    height: 35px;
+  }
+
+  .listShows {
+    z-index: -1;
+  }
+
+  .show {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border: 1px black solid;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: lightblue;
+  }
+
+  .show h3 {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+}
+/*mobile*/
+@media only screen and (max-width: 600px) {
+  body {
+    background-color: red;
+  }
+  .searchForm {
+    width: 80%;
+  }
 }

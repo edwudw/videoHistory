@@ -19,18 +19,18 @@ def getShow(showType, show):
     else:
         return redirect(getMovies.getTVImage(show), code=200)
 
-@app.route("/getImage", methods=["POST"])
+@app.route("/getImage", methods=["GET", "POST"])
 def getImage():
-    query = request.form["searchBox"]
-    return getMovies.getTVImage(query)
+    query = request.args.get("title")
+    print(query)
+    return jsonify(url=getMovies.getTVImage(query))
 
 @app.route("/getShowTitles", methods=["GET", "POST"])
 def getShowTitles():
-    print("here")
     title = request.args.get("search")
     results = getMovies.getShowTitles(title, True)
-    print("hello")
     return jsonify(titles=results)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000)
