@@ -4,10 +4,21 @@ var typingTimer;
 var doneTypingInterval = 200;
 
 $(document).ready(function() {
+    RefreshButtonEventListener();
+
     // Set width of autocomplete to same as search box
-
-
     $(".searchForm ul").css("width", $(".searchForm input").css("width"));
+
+    // Load saved list of shows
+    var arrayShows = JSON.parse(localStorage.getItem("shows"));
+    if (arrayShows != null) {
+        for (var i = 0; i < arrayShows.length; i++) {
+            appendToHTML(arrayShows[i].url, arrayShows[i].show);
+
+        }     
+    }
+
+
 
     // When item is mouse over, display blue
     $(".searchForm ul")
@@ -105,16 +116,89 @@ $(document).ready(function() {
 
     // Start of submit button code
     $(".searchForm button").click(submit);
+
+    // When delete button is clicked, remove show
+    // $(".button-wrapper button").on("click", function () {
+    //     var arrayShows = JSON.parse(localStorage.getItem("shows"));
+    //     var $parent = $(this).parent().parent();
+    //     var $showName = $parent.children("h3").text();
+    //     console.log($showName);
+        
+    //     var newArrayShows = [];
+    //     for (var i = 0; i < arrayShows.length; i++) {
+    //         if (arrayShows[i].show != $showName) {
+    //             newArrayShows.push(arrayShows[i]);
+    //         }
+    //     }
+
+    //     localStorage.setItem("shows", JSON.stringify(newArrayShows));
+    //     $parent.remove();
+    // });
 });
 
-function submit() {
+// Fixes button event handler not tied to dynamically created buttons
+function RefreshButtonEventListener() {
+    // Remove handler from existing elements
+    $(".button-wrapper button").off(); 
 
+    // Re-add event handler for all matching elements
+    $(".button-wrapper button").on("click", function () {
+        var arrayShows = JSON.parse(localStorage.getItem("shows"));
+        var $parent = $(this).parent().parent();
+        var $showName = $parent.children("h3").text();
+        
+        var newArrayShows = [];
+        for (var i = 0; i < arrayShows.length; i++) {
+            if (arrayShows[i].show != $showName) {
+                newArrayShows.push(arrayShows[i]);
+            }
+        }
+
+        localStorage.setItem("shows", JSON.stringify(newArrayShows));
+        $parent.remove();
+    });
+}
+
+function appendShow(url, show) {
+    var arrayStr = localStorage.getItem("shows");
+    var arrayShows = JSON.parse(arrayStr);
+    if (arrayShows == null) {
+        arrayShows = [];
+    }
+    var showObject = {
+        "url": url,
+        "show": show
+    };
+
+    arrayShows.push(showObject);
+    localStorage.setItem("shows", JSON.stringify(arrayShows));
+}
+
+function submit() {
+    $(".loaderPage").css("display", "block");
     $.getJSON("/getImage", {
         title: $(".searchForm input").val(),
     }, function(data) {
         var url = data["url"];
-        $(".listShows").append("<div class='show'><img src='" + url + "' alt='image'><h3>" + $(".searchForm input").val() + "</h3></div>");
+        appendShow(url, $(".searchForm input").val());
+        appendToHTML(url, $(".searchForm input").val());
+        $(".loaderPage").css("display", "none");
     });
+}
+
+// Add show to actual webpage
+function appendToHTML(url, show) {
+
+    $(".listShows").append(
+        "<div class='show'>\
+            <img src='" + url + "' alt='image'>\
+            <h3>" + show + "</h3>\
+            <div class='button-wrapper'>\
+                <button type='button' class='btn btn-danger'>Delete</button>\
+            </div>\
+        </div>"
+    );
+    RefreshButtonEventListener();
 }
 
 // For autocomplete

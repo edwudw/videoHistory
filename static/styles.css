@@ -3,6 +3,8 @@
 
   body {
   	font-family: 'Raleway', sans-serif;
+    height: 100%;
+    min-height: 100%;
   }
 
   .searchForm {
@@ -19,6 +21,7 @@
     display: none;
     position: absolute;
     background-color: white;
+    z-index: 500;
   }
   .searchForm ul li {
     padding-left: 5px;
@@ -33,6 +36,7 @@
 
   .listShows {
     z-index: -1;
+    margin-bottom: 30px;
   }
 
   .show {
@@ -44,6 +48,7 @@
     padding: 10px;
     border-radius: 5px;
     background-color: lightblue;
+    position: relative;
   }
 
   .show h3 {
@@ -51,9 +56,52 @@
     margin-left: 10px;
   }
 
+  .button-wrapper {
+    float: right;
+    padding-top: 47px;
+    padding-bottom: 47px;
+  }
+
+  .button-wrapper button {
+    display: block;
+    margin: 0 auto;
+  }
   h1 {
     text-align: center;
   }
+
+  .loaderPage {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    opacity: 0.8;
+    z-index: 1001;
+    display: none;
+  }
+
+  .loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    z-index: 1002;
+    margin-top: 15%;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  
 
 }
 /*mobile*/

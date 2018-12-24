@@ -13,12 +13,17 @@
               integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
               crossorigin="anonymous"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='video.ico') }}">
         <title>Video History</title>
     </head>
     <body>
         
         <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">Video History</a>
+
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='video_white.png') }}" width="30" height="30" alt="">
+                Video History
+            </a>
         </nav>
         <div class="searchForm">
             <input type="text" placeholder="Search" class="searchBox">
@@ -37,6 +42,8 @@
             </div> -->
 
         </div>
+
+        <div class="loaderPage"><div class="loader"></div></div>
 
     </body>
 </html>
