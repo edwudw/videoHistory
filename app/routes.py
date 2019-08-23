@@ -1,8 +1,6 @@
 from flask import request, render_template, redirect, url_for, Flask, jsonify
-import getMovies
-
-app = Flask(__name__)
-app.config["SECRET_KEY"] = "Highly secret key"
+from . import getMovies
+from app import app
 
 @app.route("/", methods=["GET", "POST"])
 def index():
